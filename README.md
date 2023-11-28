@@ -23,4 +23,8 @@ Ce programme Python offre une interface simple en ligne de commande pour chiffre
 ## Exemple d'utilisation
 
 ```bash
-$ python cesar_cipher.py
+$ python crypto.py
+```
+### Résultat
+
+![image](https://github.com/Mawug/Cryptographie/assets/72876930/46406944-6df2-485c-90a3-e5fff186c304)
