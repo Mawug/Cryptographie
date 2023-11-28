@@ -1,57 +1,74 @@
-import random, sys
+def chiffrer_cesar(message_clair, decalage):
+    message_chiffre = ""
 
-LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-def main():
-   message = ''
-   if len(sys.argv) > 1:
-      with open(sys.argv[1], 'r') as f:
-         message = f.read()
-   else:
-      message = raw_input("Enter your message: ")
-   mode = raw_input("E for Encrypt, D for Decrypt: ")
-   key = ''
-   
-   while checkKey(key) is False:
-      key = raw_input("Enter 26 ALPHA key (leave blank for random key): ")
-      if key == '':
-         key = getRandomKey()
-      if checkKey(key) is False:
-		print('There is an error in the key or symbol set.')
-   translated = translateMessage(message, key, mode)
-   print('Using key: %s' % (key))
-   
-   if len(sys.argv) > 1:
-      fileOut = 'enc.' + sys.argv[1]
-      with open(fileOut, 'w') as f:
-         f.write(translated)
-      print('Success! File written to: %s' % (fileOut))
-   else: print('Result: ' + translated)
+    for caractere in message_clair:
+        if caractere.isalpha():  # Vérifie si le caractère est une lettre
+            majuscule = caractere.isupper()  # Vérifie si le caractère est en majuscule
+            caractere = caractere.lower()  # Convertit en minuscule pour le traitement
 
-# Store the key into list, sort it, convert back, compare to alphabet.
-def checkKey(key):
-   keyString = ''.join(sorted(list(key)))
-   return keyString == LETTERS
-def translateMessage(message, key, mode):
-   translated = ''
-   charsA = LETTERS
-   charsB = key
-   
-   # If decrypt mode is detected, swap A and B
-   if mode == 'D':
-      charsA, charsB = charsB, charsA
-   for symbol in message:
-      if symbol.upper() in charsA:
-         symIndex = charsA.find(symbol.upper())
-         if symbol.isupper():
-            translated += charsB[symIndex].upper()
-         else:
-            translated += charsB[symIndex].lower()
-				else:
-               translated += symbol
-         return translated
-def getRandomKey():
-   randomList = list(LETTERS)
-   random.shuffle(randomList)
-   return ''.join(randomList)
-if __name__ == '__main__':
-   main()
+            # Chiffrement en utilisant la formule de César
+            decalage_cesar = (ord(caractere) - ord('a') + decalage) % 26
+            caractere_chiffre = chr(decalage_cesar + ord('a'))
+
+            # Restaure la majuscule si c'était le cas dans le message original
+            if majuscule:
+                caractere_chiffre = caractere_chiffre.upper()
+
+            message_chiffre += caractere_chiffre
+        else:
+            # Ajoute les caractères non alphabétiques tels quels
+            message_chiffre += caractere
+
+    return message_chiffre
+
+
+def dechiffrer_cesar(message_chiffre, decalage):
+    message_dechiffre = ""
+
+    for caractere in message_chiffre:
+        if caractere.isalpha():  # Vérifie si le caractère est une lettre
+            majuscule = caractere.isupper()  # Vérifie si le caractère est en majuscule
+            caractere = caractere.lower()  # Convertit en minuscule pour le traitement
+
+            # Déchiffrement en utilisant la formule de César
+            decalage_inverse = (ord(caractere) - ord('a') - decalage) % 26
+            caractere_dechiffre = chr(decalage_inverse + ord('a'))
+
+            # Restaure la majuscule si c'était le cas dans le message original
+            if majuscule:
+                caractere_dechiffre = caractere_dechiffre.upper()
+
+            message_dechiffre += caractere_dechiffre
+        else:
+            # Ajoute les caractères non alphabétiques tels quels
+            message_dechiffre += caractere
+
+    return message_dechiffre
+
+
+# Menu principal
+while True:
+    print("\n1. Chiffrer un message")
+    print("2. Déchiffrer un message")
+    print("3. Quitter")
+
+    choix = input("Choisissez une option (1/2/3) : ")
+
+    if choix == "1":
+        message_clair = input("Entrez le message clair : ")
+        decalage_chiffrement = int(input("Entrez le décalage de chiffrement : "))
+        message_chiffre = chiffrer_cesar(message_clair, decalage_chiffrement)
+        print("Message chiffré :", message_chiffre)
+
+    elif choix == "2":
+        message_chiffre = input("Entrez le message chiffré : ")
+        decalage_dechiffrement = int(input("Entrez le décalage de déchiffrement : "))
+        message_dechiffre = dechiffrer_cesar(message_chiffre, decalage_dechiffrement)
+        print("Message déchiffré :", message_dechiffre)
+
+    elif choix == "3":
+        print("Programme terminé.")
+        break
+
+    else:
+        print("Option invalide. Veuillez choisir 1, 2 ou 3.")
